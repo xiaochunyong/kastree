@@ -503,29 +503,32 @@ open class Converter {
             error("Unrecognized string template type for $v")
     }
 
-    open fun convertStructured(v: KtClassOrObject) = Node.Decl.Structured(
-        mods = convertModifiers(v),
-        form = when (v) {
-            is KtClass -> when {
-                v.isEnum() -> Node.Decl.Structured.Form.ENUM_CLASS
-                v.isInterface() -> Node.Decl.Structured.Form.INTERFACE
-                else -> Node.Decl.Structured.Form.CLASS
-            }
-            is KtObjectDeclaration ->
-                if (v.isCompanion()) Node.Decl.Structured.Form.COMPANION_OBJECT
-                else Node.Decl.Structured.Form.OBJECT
-            else -> error("Unknown type of $v")
-        },
-        name = v.name ?: error("Missing name"),
-        typeParams = v.typeParameters.map(::convertTypeParam),
-        primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
-        // TODO: this
-        parentAnns = emptyList(),
-        parents = v.superTypeListEntries.map(::convertParent),
-        typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
-        members = v.declarations.map(::convertDecl)
-    ).map(v)
+    open fun convertStructured(v: KtClassOrObject): Node.Decl.Structured {
+        val result = Node.Decl.Structured(
+                mods = convertModifiers(v),
+                form = when (v) {
+                    is KtClass -> when {
+                        v.isEnum() -> Node.Decl.Structured.Form.ENUM_CLASS
+                        v.isInterface() -> Node.Decl.Structured.Form.INTERFACE
+                        else -> Node.Decl.Structured.Form.CLASS
+                    }
+                    is KtObjectDeclaration ->
+                        if (v.isCompanion()) Node.Decl.Structured.Form.COMPANION_OBJECT
+                        else Node.Decl.Structured.Form.OBJECT
+                    else -> error("Unknown type of $v")
+                },
+                name = v.name ?: error("Missing name"),
+                typeParams = v.typeParameters.map(::convertTypeParam),
+                primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
+                // TODO: this
+                parentAnns = emptyList(),
+                parents = v.superTypeListEntries.map(::convertParent),
+                typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
+                members = v.declarations.map(::convertDecl)
+        ).map(v)
+        return result
 
+    }
     open fun convertSuper(v: KtSuperExpression) = Node.Expr.Super(
         typeArg = v.superTypeQualifier?.let(::convertType),
         label = v.getLabelName()

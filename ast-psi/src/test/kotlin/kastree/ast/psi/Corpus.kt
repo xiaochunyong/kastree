@@ -16,7 +16,9 @@ object Corpus {
     val kotlinRepoTestData by lazy {
         // Recursive from $KOTLIN_REPO/compiler/testData/psi/**/*.kt
         loadTestDataFromDir(Paths.get(
-            System.getenv("KOTLIN_REPO") ?: error("No KOTLIN_REPO env var"),
+            "/Users/Ely/Projects/Github/kotlin" ?: error("No KOTLIN_REPO env var"),
+//        loadTestDataFromDir(Paths.get(
+//            System.getenv("KOTLIN_REPO") ?: error("No KOTLIN_REPO env var"),
             "compiler/testData/psi"
         ).also { require(Files.isDirectory(it)) { "Dir not found at $it" } })
     }

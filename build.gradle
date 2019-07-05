@@ -70,6 +70,7 @@ project(':ast-psi') {
         compile project(':ast:ast-jvm')
         compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         compile "org.jetbrains.kotlin:kotlin-compiler-embeddable:$kotlin_version"
+//        compile(files("/Users/Ely/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/191.7479.19/IntelliJ IDEA.app/Contents/plugins/Kotlin/lib/kotlin-plugin.jar"))
         testCompile 'junit:junit:4.12'
         testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
         testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"

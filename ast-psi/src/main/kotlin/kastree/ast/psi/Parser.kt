@@ -1,8 +1,10 @@
 package kastree.ast.psi
 
+import kastree.ast.Node
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiErrorElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiManager
 import org.jetbrains.kotlin.com.intellij.testFramework.LightVirtualFile
@@ -26,8 +28,11 @@ open class Parser(val converter: Converter = Converter) {
         }
     })
 
-    fun parsePsiFile(code: String) =
-        PsiManager.getInstance(proj).findFile(LightVirtualFile("temp.kt", KotlinFileType.INSTANCE, code)) as KtFile
+    fun parsePsiFile(code: String): KtFile {
+        val ktFile = PsiManager.getInstance(proj).findFile(LightVirtualFile("temp.kt", KotlinFileType.INSTANCE, code)) as KtFile
+        return ktFile
+    }
+
 
     data class ParseError(
         val file: KtFile,
@@ -40,4 +45,41 @@ open class Parser(val converter: Converter = Converter) {
             System.setProperty("idea.use.native.fs.for.win", "false")
         }
     }
+
+}
+
+fun main() {
+    Parser().parseFile("""
+        package me.ely.codegen
+        import java.lang.String
+        /**
+         *
+         *
+         * @author  <a href="mailto:xiaochunyong@gmail.com">Ely</a>
+         * @see
+         * @since   2019-06-28
+         */
+        data class Field (
+            /**
+             * field type
+             */
+            private var type: String,
+
+            /**
+             * field name
+             */
+            val name: List<String>,
+
+            /**
+             * the field modifier, like "private",or "@Setter private" if include annotations
+             */
+            var modifier: String,
+
+            /**
+             * field doc comment
+             */
+            var comment: String
+
+        )
+    """.trimIndent())
 }
