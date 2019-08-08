@@ -7,9 +7,11 @@ import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiErrorElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiManager
+import org.jetbrains.kotlin.com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.com.intellij.testFramework.LightVirtualFile
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.idea.KotlinFileType
+import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 
@@ -30,6 +32,7 @@ open class Parser(val converter: Converter = Converter) {
 
     fun parsePsiFile(code: String): KtFile {
         val ktFile = PsiManager.getInstance(proj).findFile(LightVirtualFile("temp.kt", KotlinFileType.INSTANCE, code)) as KtFile
+        val classes = PsiTreeUtil.findChildrenOfType(ktFile, KtClass::class.java)
         return ktFile
     }
 
@@ -52,6 +55,7 @@ fun main() {
     Parser().parseFile("""
         package me.ely.codegen
         import java.lang.String
+        import javax.persistence.Id
         /**
          *
          *
@@ -60,10 +64,12 @@ fun main() {
          * @since   2019-06-28
          */
         data class Field (
+
             /**
              * field type
              */
-            private var type: String,
+            @Id val type: String,
+
 
             /**
              * field name
