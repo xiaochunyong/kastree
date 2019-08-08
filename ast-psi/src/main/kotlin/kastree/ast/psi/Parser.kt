@@ -32,6 +32,7 @@ open class Parser(val converter: Converter = Converter) {
 
     fun parsePsiFile(code: String): KtFile {
         val ktFile = PsiManager.getInstance(proj).findFile(LightVirtualFile("temp.kt", KotlinFileType.INSTANCE, code)) as KtFile
+        // see https://github.com/JetBrains/kotlin-netbeans/blob/master/src/main/java/org/jetbrains/kotlin/debugger/KotlinSourcePathProvider.java
         val classes = PsiTreeUtil.findChildrenOfType(ktFile, KtClass::class.java)
         return ktFile
     }
